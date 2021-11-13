@@ -33,18 +33,7 @@
 		<author>Антон Работніков</author>
 		<author>Максим Гнідченко</author>
 		<terms>Для викладачів</terms>
-		<registered>123</registered>
-	</service>
-	<service>
-		<title>Відомість студентів</title>
-		<annotation>Відомість з відмітками</annotation>
-		<type>Електронний</type>
-		<version>Редагуєма версія</version>
-		<author>Кіріл Шевчук</author>
-		<author>Антон Работніков</author>
-		<author>Максим Гнідченко</author>
-		<terms>Для викладачів</terms>
-		<registered>123</registered>
+		<registered>110</registered>
 	</service>
 	<service>
 		<title>Тритон</title>
