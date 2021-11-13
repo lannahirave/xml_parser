@@ -23,7 +23,7 @@ class Parser:
             items = []
             for i in d.values():
                 items.append(i)
-            print(items)
+            #print(items)
             self.services_list.append(Service(items))
     
     def get_array(self):
