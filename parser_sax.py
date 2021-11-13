@@ -65,8 +65,8 @@ class XMLHandler(xml.sax.ContentHandler):
             self.terms = content
         elif self.CurrentData == "registered":
             self.registered = content
-            service = Service(self.title, self.annotation, self.type, self.version, \
-                self.authors.copy(), self.terms, self.registered,)
+            service = Service([self.title, self.annotation, self.type, self.version, \
+                self.authors.copy(), self.terms, self.registered])
             self.services_list.append(service)
             self.authors.clear()
              
