@@ -10,7 +10,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import *
-from strategy import Context
+from strategy import *
 import sys
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
@@ -130,6 +130,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_2.setGeometry(QtCore.QRect(110, 230, 81, 23))
         self.pushButton_2.setObjectName("pushButton_2")
+        self.pushButton_2.clicked.connect(self.find)
         self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_3.setGeometry(QtCore.QRect(190, 340, 81, 23))
         self.pushButton_3.setObjectName("pushButton_3")
@@ -188,23 +189,77 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menubar.addAction(self.menu_1.menuAction())
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        MainWindow.setStyleSheet(u"background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 0, 0, 255), stop:0.166 rgba(255, 255, 0, 255), stop:0.333 rgba(0, 255, 0, 255), stop:0.5 rgba(0, 255, 255, 255), stop:0.666 rgba(0, 0, 255, 255), stop:0.833 rgba(255, 0, 255, 255), stop:1 rgba(255, 0, 0, 255));")
         
         self.current_file = ''
+        self.list_check_boxes = [self.checkBox_1, self.checkBox_8, self.checkBox_3, self.checkBox_4, \
+            self.checkBox_5, self.checkBox_6, self.checkBox_7]
         
+        self.list_combo_boxes = [self.comboBox_5, self.comboBox_6, self.comboBox_8, self.comboBox_9,\
+            self.comboBox_10, self.comboBox_11, self.comboBox_12]
     
     def handleOpen(self):
         try:
+            self.clear_boxes()
+            self.textBrowser.clear()
+            self.uncheck()
             path = QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', '', 'xml(*.xml)')
             if path[0] != '' and path is not None:
-                print(path[0])
+                #print('IF', path[0])
                 self.current_file = path[0]
+            else:
+                return
+            f = open(self.current_file, 'r', encoding="utf-8")
+            if self.radioButton.isChecked():
+                self.parser = Context(SAX_parser())
+                
+            elif self.radioButton_2.isChecked():
+                self.parser = Context(DOM_parser())
+                
+            elif self.radioButton_3.isChecked():
+                self.parser = Context(FAST_parser())
+                
+            self.services_list = self.parser.parse(self.current_file)
+            self.textBrowser.clear()
+            text = ''    
+            for service in self.services_list:
+                text += service.info()
+                self.textBrowser.setPlainText(text)
+                
+            self.clear_boxes()
+            self.fill_combo_boxes_contents()
+        
         except Exception as exp:
             print(exp)
+            self.textBrowser.setPlainText(str(exp))
+            self.current_file = ''
             return
-        f = open(self.current_file, 'r', encoding="utf-8")
-        text = f.read()
-        self.textBrowser.setPlainText(text)
     
+    def fill_combo_boxes_contents(self):
+        
+        for service in self.services_list:
+            properties = service.properties()
+            for i in range(len(properties)):
+                print(properties[i])
+                item = properties[i]
+                if type(item) == list:
+                    for author in item:
+                        self.list_combo_boxes[i].addItem(author)
+                    continue
+                self.list_combo_boxes[i].addItem(item)
+    
+    
+    def find(self):
+        pass
+        
+    def clear_boxes(self):
+        for box in self.list_combo_boxes:
+                box.clear()
+    
+    def uncheck(self):
+        for check_box in self.list_check_boxes:
+            check_box.setChecked(False)
+            
     def about(self):
         box = QMessageBox()
         box.setIcon(QMessageBox.Information)
@@ -226,15 +281,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "XML"))
-        self.checkBox_6.setText(_translate("MainWindow", "Умови"))
-        self.checkBox_4.setText(_translate("MainWindow", "Версія"))
-        self.checkBox_5.setText(_translate("MainWindow", "Автор"))
-        self.checkBox_7.setText(_translate("MainWindow", "Реєстріції"))
         self.checkBox_1.setText(_translate("MainWindow", "Назва"))
         self.checkBox_3.setText(_translate("MainWindow", "Тип"))
+        self.checkBox_4.setText(_translate("MainWindow", "Версія"))
+        self.checkBox_5.setText(_translate("MainWindow", "Автор"))
+        self.checkBox_6.setText(_translate("MainWindow", "Умови"))
+        self.checkBox_7.setText(_translate("MainWindow", "Реєстріції"))
         self.checkBox_8.setText(_translate("MainWindow", "Зміст"))
         self.pushButton.setText(_translate("MainWindow", "Видалити"))
-        self.pushButton_2.setToolTip(_translate("MainWindow", "<html><head/><body><p>Пошук за параметрами.</p></body></html>"))
+        self.pushButton_2.setToolTip(_translate("MainWindow", "Пошук за параметрами."))
         self.pushButton_2.setText(_translate("MainWindow", "Пошук"))
         self.pushButton_3.setText(_translate("MainWindow", "Зберігти"))
         self.radioButton.setText(_translate("MainWindow", "SAX API"))
@@ -243,6 +298,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButton_4.setText(_translate("MainWindow", "Трансформація"))
         self.radioButton_3.setText(_translate("MainWindow", "ETree api"))
         self.pushButton_5.setText(_translate("MainWindow", "Відкрити"))
+        self.pushButton_5.setToolTip(_translate("MainWindow", "Відкрити і пропарсити."))
         self.menu_0.setTitle(_translate("MainWindow", "Файл"))
         self.menu_1.setTitle(_translate("MainWindow", "Допомога"))
         self.actionOpen.setText(_translate("MainWindow", "Відкрити"))
