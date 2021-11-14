@@ -1,6 +1,6 @@
 from main import Ui_MainWindow
 import sys
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
 
 
@@ -9,6 +9,7 @@ class myapp(QtWidgets.QMainWindow):
         super(myapp, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
 
 def main():
     app = QtWidgets.QApplication(sys.argv)

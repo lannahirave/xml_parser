@@ -9,7 +9,9 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import *
 from strategy import Context
+import sys
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
     def setupUi(self, MainWindow):
@@ -138,9 +140,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.radioButton_2 = QtWidgets.QRadioButton(self.centralwidget)
         self.radioButton_2.setGeometry(QtCore.QRect(30, 340, 82, 17))
         self.radioButton_2.setObjectName("radioButton_2")
-        self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
+        self.textBrowser = QtWidgets.QPlainTextEdit(self.centralwidget)
         self.textBrowser.setGeometry(QtCore.QRect(330, 10, 441, 521))
         self.textBrowser.setObjectName("textBrowser")
+        self.textBrowser.setReadOnly(True)
+        self.textBrowser.setLineWrapMode(QtWidgets.QPlainTextEdit.LineWrapMode.NoWrap)
         self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_4.setGeometry(QtCore.QRect(190, 310, 81, 23))
         self.pushButton_4.setStyleSheet("")
@@ -151,6 +155,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButton_5 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_5.setGeometry(QtCore.QRect(190, 280, 81, 23))
         self.pushButton_5.setObjectName("pushButton_5")
+        self.pushButton_5.released.connect(self.handleOpen)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 785, 21))
@@ -172,8 +177,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.action_3.setObjectName("action_3")
         self.actionExit = QtWidgets.QAction(MainWindow)
         self.actionExit.setObjectName("actionExit")
+        self.actionExit.triggered.connect(sys.exit)
         self.actionAbout = QtWidgets.QAction(MainWindow)
         self.actionAbout.setObjectName("actionAbout")
+        self.actionAbout.triggered.connect(self.about)
         self.menu_0.addAction(self.actionOpen)
         self.menu_0.addAction(self.actionExit)
         self.menu_1.addAction(self.actionAbout)
@@ -194,10 +201,27 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except Exception as exp:
             print(exp)
             return
-        f = open(self.current_file, 'r')
-        print(f)
-        self.textBrowser.setText(f.read())
+        f = open(self.current_file, 'r', encoding="utf-8")
+        text = f.read()
+        self.textBrowser.setPlainText(text)
+    
+    def about(self):
+        box = QMessageBox()
+        box.setIcon(QMessageBox.Information)
+        box.setWindowTitle('Допомога')
+        icon0 = QtGui.QIcon()
+        #icon0.addPixmap(QtGui.QPixmap(":/iconsMain/images/new-document.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        box.setWindowIcon(icon0)
+        box.setText("Нікітін Валерій К-24\nВаріант: 10\nТаблиці БД містять таку інформацію:\n"\
+            "Назва сервісу, анотація, вид, версія, автор (….),\n умовита правила використання,"\
+            "\n інформація при реєстрації користувачів.")
+        box.setStandardButtons(QMessageBox.Close)
+        close = box.button(QMessageBox.Close)
+        close.setText("Ок")
         
+        box.exec()
+        if box.clickedButton() == close:
+            box.close()   
         
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
