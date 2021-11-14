@@ -6,8 +6,6 @@ import xml.dom.minidom
 from service import Service
 
 
-    
-
 class Parser(ABC):
     """
     The Strategy interface declares operations common to all supported versions
