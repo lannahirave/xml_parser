@@ -27,7 +27,7 @@
 	<service>
 		<title>Відомість студентів</title>
 		<annotation>Відомість з відмітками</annotation>
-		<type>Електронний</type>
+		<type>Фізичний</type>
 		<version>Фінальна версія</version>
 		<author>Кіріл Шевчук</author>
 		<author>Антон Работніков</author>
