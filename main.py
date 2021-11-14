@@ -130,7 +130,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_2.setGeometry(QtCore.QRect(110, 230, 81, 23))
         self.pushButton_2.setObjectName("pushButton_2")
-        self.pushButton_2.clicked.connect(self.find)
+        self.pushButton_2.released.connect(self.find)
         self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_3.setGeometry(QtCore.QRect(190, 340, 81, 23))
         self.pushButton_3.setObjectName("pushButton_3")
@@ -221,11 +221,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 
             self.services_list = self.parser.parse(self.current_file)
             self.textBrowser.clear()
-            text = ''    
-            for service in self.services_list:
-                text += service.info()
-                self.textBrowser.setPlainText(text)
-                
+            self.show_services(self.services_list)
             self.clear_boxes()
             self.fill_combo_boxes_contents()
         
@@ -235,10 +231,22 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.current_file = ''
             return
     
-    def fill_combo_boxes_contents(self):
+    def show_services(self, services_list: list):
+        text = ''
+        if services_list == []:
+            self.textBrowser.clear()
+        for service in services_list:
+                text += service.info()
+                self.textBrowser.setPlainText(text)
         
-        for service in self.services_list:
-            properties = service.properties()
+    def fill_combo_boxes_contents(self, flag=0):
+        """
+        Fills combo boxes with options from xml
+        
+        """
+        services = self.services_list
+        for service in services:
+            properties: Service = service.properties()
             for i in range(len(properties)):
                 print(properties[i])
                 item = properties[i]
@@ -250,9 +258,48 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     
     
     def find(self):
-        pass
+        print("FIND")
+        filters = []
+        for i in range(len(self.list_check_boxes)):
+            box = self.list_check_boxes[i]
+            if box.isChecked():
+                item = self.list_combo_boxes[i].currentText()
+                print(item)
+                filters.append(item)
+            else:
+                filters.append('')
+        if filters == ['']*len(self.list_check_boxes):
+            print('empty filters')
+            self.show_services(self.services_list)
+            return
+        self.filtering(filters)
+        
+        self.show_services(self.filtered_services_list)
+    
+    def filtering(self, filters: list):
+        print("FILTERING")
+        self.filtered_services_list = []
+        flag = True
+        services = self.services_list
+        for service in services:
+            props = service.properties()
+            for i in range(len(props)):
+                if filters[i] == '':
+                    continue
+                if filters[i] != props[i]:
+                    flag = False
+                    break
+            if not flag:
+                flag = True
+                continue
+            self.filtered_services_list.append(service)
+        
+        
         
     def clear_boxes(self):
+        """
+        Clears combo boxes options
+        """
         for box in self.list_combo_boxes:
                 box.clear()
     
