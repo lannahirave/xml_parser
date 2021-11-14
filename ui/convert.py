@@ -4,12 +4,15 @@ def main():
     arr = os.listdir()
     uies = []
     qrcs = []
+    
     for i in arr:
         if i.endswith(".ui"):
             uies.append(i)
         if i.endswith('.qrc'):
             qrcs.append(i)
     name = ''
+    if not uies:
+        return
     print(uies)
     while name not in uies:
         name = input("Enter name of needed ui: ")
@@ -24,6 +27,9 @@ def main():
     except Exception as e:
         print(e)
         
+        
+    if qrcs == []:
+        return
     print(qrcs)
     while name not in qrcs:
         name = input("Enter name of needed qrc: ")
