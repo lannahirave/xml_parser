@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--10. "Інформаційні сервіси мережі факультету "-->
+<!--Таблиці БД містять таку інформацію: Назва сервісу, анотація, вид, версія,-->
+<!--автор (....), умови та правила використання,-->
+<!--інформація при реєстрації користувачів-->
+<services>
+	<service>
+		<title>Розклад занять для студентів ФКНК</title>
+		<annotation>Розклад</annotation>
+		<type>Електронний</type>
+		<version>Фінальна версія</version>
+		<author>Юрій Головач</author>
+		<author>Євген Пархоменко</author>
+		<author>Ярослав Великий</author>
+		<terms>Вільні умови</terms>
+		<registered>1524</registered>
+	</service>
+	<service>
+		<title>Розклад занять для викладачів ФКНК</title>
+		<annotation>Розклад</annotation>
+		<type>Електронний</type>
+		<version>Фінальна версія</version>
+		<author>Олена Висоцька</author>
+		<terms>Вільні умови</terms>
+		<registered>123</registered>
+	</service>
+	<service>
+		<title>Відомість студентів</title>
+		<annotation>Відомість з відмітками</annotation>
+		<type>Фізичний</type>
+		<version>Фінальна версія</version>
+		<author>Кіріл Шевчук</author>
+		<author>Антон Работніков</author>
+		<author>Максим Гнідченко</author>
+		<terms>Для викладачів</terms>
+		<registered>110</registered>
+	</service>
+	<service>
+		<title>Тритон</title>
+		<annotation>Помічник студента</annotation>
+		<type>Електронний</type>
+		<version>Редагуєма версія</version>
+		<author>Наполеон</author>
+		<author>Деканат №1</author>
+		<author>Деканат №3</author>
+		<terms>Для студентів</terms>
+		<registered>31253</registered>
+	</service>
+	<service>
+		<title>НеТритон</title>
+		<annotation>НеПомічник студента</annotation>
+		<type>НеЕлектронний</type>
+		<version>Редагуєма версія</version>
+		<author>Я сліва садовая</author>
+		<author>спєлая, ліловая</author>
+		<author>Деканат №1253</author>
+		<terms>Для студентів-волколаків</terms>
+		<registered>31253125125125152</registered>
+	</service>
+</services>
