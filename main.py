@@ -11,6 +11,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import *
 from strategy import *
+from transform import TransformerToXml
 import sys
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
@@ -127,6 +128,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(190, 370, 81, 23))
         self.pushButton.setObjectName("pushButton")
+        self.pushButton.released.connect(lambda: self.default(MainWindow))
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_2.setGeometry(QtCore.QRect(110, 230, 81, 23))
         self.pushButton_2.setObjectName("pushButton_2")
@@ -134,6 +136,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_3.setGeometry(QtCore.QRect(190, 340, 81, 23))
         self.pushButton_3.setObjectName("pushButton_3")
+        self.pushButton_3.released.connect(lambda: self.save_filtered(MainWindow))
         self.radioButton = QtWidgets.QRadioButton(self.centralwidget)
         self.radioButton.setGeometry(QtCore.QRect(30, 310, 82, 17))
         self.radioButton.setChecked(True)
@@ -150,13 +153,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButton_4.setGeometry(QtCore.QRect(190, 310, 81, 23))
         self.pushButton_4.setStyleSheet("")
         self.pushButton_4.setObjectName("pushButton_4")
+        self.pushButton_4.released.connect(lambda: self.transform(MainWindow))
         self.radioButton_3 = QtWidgets.QRadioButton(self.centralwidget)
         self.radioButton_3.setGeometry(QtCore.QRect(30, 370, 82, 17))
         self.radioButton_3.setObjectName("radioButton_3")
         self.pushButton_5 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_5.setGeometry(QtCore.QRect(190, 280, 81, 23))
         self.pushButton_5.setObjectName("pushButton_5")
-        self.pushButton_5.released.connect(self.handleOpen)
+        self.pushButton_5.released.connect(lambda: self.handleOpen(MainWindow))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 785, 21))
@@ -190,15 +194,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setStyleSheet(u"background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 0, 0, 255), stop:0.166 rgba(255, 255, 0, 255), stop:0.333 rgba(0, 255, 0, 255), stop:0.5 rgba(0, 255, 255, 255), stop:0.666 rgba(0, 0, 255, 255), stop:0.833 rgba(255, 0, 255, 255), stop:1 rgba(255, 0, 0, 255));")
-        
+        self.filtered_services_list = []
         self.current_file = ''
+        self.services_list = []
         self.list_check_boxes = [self.checkBox_1, self.checkBox_8, self.checkBox_3, self.checkBox_4, \
             self.checkBox_5, self.checkBox_6, self.checkBox_7]
         
         self.list_combo_boxes = [self.comboBox_5, self.comboBox_6, self.comboBox_8, self.comboBox_9,\
             self.comboBox_10, self.comboBox_11, self.comboBox_12]
     
-    def handleOpen(self):
+    def show_message(self, mw: QtWidgets.QMainWindow,  text=' '):
+        new = self.statusBar()
+        new.showMessage(text, 6000)
+        mw.setStatusBar(new)
+         
+    def handleOpen(self, mw: QtWidgets.QMainWindow):
         try:
             self.clear_boxes()
             self.textBrowser.clear()
@@ -218,8 +228,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 
             elif self.radioButton_3.isChecked():
                 self.parser = Context(FAST_parser())
-                
+            else:
+                return  
+            
             self.services_list = self.parser.parse(self.current_file)
+            self.filtered_services_list = self.services_list.copy()
             self.textBrowser.clear()
             self.show_services(self.services_list)
             self.clear_boxes()
@@ -227,7 +240,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         
         except Exception as exp:
             print(exp)
-            self.textBrowser.setPlainText(str(exp))
+            self.show_message(mw, str(exp))
             self.current_file = ''
             return
     
@@ -256,15 +269,23 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                     continue
                 self.list_combo_boxes[i].addItem(item)
     
-    
+    def default(self, mw: QtWidgets.QMainWindow):
+        self.clear_boxes()
+        self.show_message(mw, ' ')
+        self.uncheck()
+        self.textBrowser.clear()
+        self.filtered_services_list = []
+        self.services_list = []
+        
+        
     def find(self):
-        print("FIND")
+        #print("FIND")
         filters = []
         for i in range(len(self.list_check_boxes)):
             box = self.list_check_boxes[i]
             if box.isChecked():
                 item = self.list_combo_boxes[i].currentText()
-                print(item)
+                #print(item)
                 filters.append(item)
             else:
                 filters.append('')
@@ -277,7 +298,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.show_services(self.filtered_services_list)
     
     def filtering(self, filters: list):
-        print("FILTERING")
+        #print("FILTERING")
         self.filtered_services_list = []
         flag = True
         services = self.services_list
@@ -293,8 +314,41 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 flag = True
                 continue
             self.filtered_services_list.append(service)
+    
+    def transform(self, mw: QtWidgets.QMainWindow):
+        list_to_create = self.filtered_services_list
+        if list_to_create == []:
+                self.show_message(mw, 'Пустий файл!')
+                return
+        trans = TransformerToXml()
+        path = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File', '', 'html(*.html)')
+        if path[0] == '' or path is None:
+            return
+        try:
+            trans.create_html_file(list_to_create, self.current_file, path[0])
+        except Exception as exp:
+            self.show_message(mw, str(exp))
+            
+            
         
         
+    def save_filtered(self, mw: QtWidgets.QMainWindow):
+        try:
+            trans = TransformerToXml()
+            list_to_generate = self.filtered_services_list
+            if list_to_generate == []:
+                self.show_message(mw, 'Пустий файл!')
+                return
+            print(list_to_generate)
+            text = trans.generate_xml_text(list_to_generate)
+            #print(text)
+            path = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File', '', 'XML(*.xml)')
+            if path[0] == '' or path is None:
+                return
+            with open(path[0], 'w', encoding='utf-8') as f:
+                f.write(text)
+        except Exception as exp:
+            self.show_message(mw, str(exp))
         
     def clear_boxes(self):
         """
