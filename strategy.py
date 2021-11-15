@@ -25,7 +25,7 @@ class Parser(ABC):
 
 class SAX_parser(Parser):
     def parse(self, path):
-        print("SAX", path)
+        #print("SAX", path)
         parser = xml.sax.make_parser()
         parser.setFeature(xml.sax.handler.feature_namespaces, 0)
 
@@ -39,7 +39,7 @@ class SAX_parser(Parser):
  
 class DOM_parser(Parser):
     def parse(self, path):
-        print("DOM", path)
+        #print("DOM", path)
         self.services_list = []
         dom = xml.dom.minidom.parse(path)
         dom.normalize()
@@ -67,7 +67,7 @@ class DOM_parser(Parser):
 
 class FAST_parser(Parser):
     def parse(self, path):
-        print("FAST", path)
+        #print("FAST", path)
         self.services_list = []
         tree = ET.parse(path)
         root = tree.getroot()
