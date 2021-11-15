@@ -258,6 +258,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         
         """
         services = self.services_list
+        filters = []
         for service in services:
             properties: Service = service.properties()
             for i in range(len(properties)):
@@ -265,10 +266,17 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 item = properties[i]
                 if type(item) == list:
                     for author in item:
+                        if author in filters:
+                            continue
                         self.list_combo_boxes[i].addItem(author)
+                        filters.append(author)
+                    continue
+                if item in filters:
                     continue
                 self.list_combo_boxes[i].addItem(item)
-    
+                filters.append(item)
+                #print(filters)
+                
     def default(self, mw: QtWidgets.QMainWindow):
         self.clear_boxes()
         self.show_message(mw, ' ')
@@ -307,7 +315,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             for i in range(len(props)):
                 if filters[i] == '':
                     continue
-                if filters[i] != props[i]:
+                if filters[i] not in props[i]:
                     flag = False
                     break
             if not flag:
@@ -390,9 +398,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.checkBox_7.setText(_translate("MainWindow", "Реєстріції"))
         self.checkBox_8.setText(_translate("MainWindow", "Зміст"))
         self.pushButton.setText(_translate("MainWindow", "Видалити"))
+        self.pushButton.setToolTip(_translate("MainWindow", "Скидує усі налаштування включно з файлом"))
         self.pushButton_2.setToolTip(_translate("MainWindow", "Пошук за параметрами."))
         self.pushButton_2.setText(_translate("MainWindow", "Пошук"))
         self.pushButton_3.setText(_translate("MainWindow", "Зберігти"))
+        self.pushButton_3.setToolTip(_translate("MainWindow", "Трансформує ПОТОЧНИЙ ФАЙЛ.\nЩоб транс. фільтрований, збережіть його."))
         self.radioButton.setText(_translate("MainWindow", "SAX API"))
         self.radioButton_2.setText(_translate("MainWindow", "DOM API"))
         self.pushButton_4.setToolTip(_translate("MainWindow", "<html><head/><body><p>Трансформує XML в HTML.</p></body></html>"))
