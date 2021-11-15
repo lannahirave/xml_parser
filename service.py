@@ -4,6 +4,7 @@
 class Service:
     def __init__(self, args):
         self.names = ["Назва", "Анотація", "Тип", "Версія", "Автор", "Умови", "Зареєстровані"]
+        self.names_eng = ['title', 'annotation','type','version','author','terms','registered']
         try:
             self._properties = args
             self.title = args[0]
@@ -17,9 +18,7 @@ class Service:
             print(exp)
         
     def info(self) -> str:
-        """[summary]
-
-        Returns:
+        """Returns:
             str: [information about properties]
         """
         text = ''
@@ -34,4 +33,7 @@ class Service:
     
     def properties(self) -> list:
         return self._properties
+    
+    def get_names_eng(self):
+        return self.names_eng
         
