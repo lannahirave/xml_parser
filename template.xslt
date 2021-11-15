@@ -24,9 +24,9 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
       <td><xsl:value-of select="version"/></td>
       <td>
        <xsl:for-each select="author">
-       <tr>
-       <xsl:value-of select="."/>
-       </tr>
+       
+       <xsl:value-of select="concat(., ' ')"/>
+       
        </xsl:for-each>
       </td>
       <td><xsl:value-of select="terms"/></td>
