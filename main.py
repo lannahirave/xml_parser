@@ -332,10 +332,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         path = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File', '', 'html(*.html)')
         if path[0] == '' or path is None:
             return
-        try:
-            trans.create_html_file(list_to_create, self.current_file, path[0])
-        except Exception as exp:
-            self.show_message(mw, str(exp))
+        if 1:
+            new_xml = trans.generate_xml_text(self.filtered_services_list)
+            trans.create_html_file(list_to_create, new_xml, path[0])
+        # except Exception as exp:
+        #     self.show_message(mw, str(exp))
+        #     print(exp)
             
             
         
@@ -402,7 +404,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButton_2.setToolTip(_translate("MainWindow", "Пошук за параметрами."))
         self.pushButton_2.setText(_translate("MainWindow", "Пошук"))
         self.pushButton_3.setText(_translate("MainWindow", "Зберігти"))
-        self.pushButton_3.setToolTip(_translate("MainWindow", "Трансформує ПОТОЧНИЙ ФАЙЛ.\nЩоб транс. фільтрований, збережіть його."))
+        self.pushButton_3.setToolTip(_translate("MainWindow", "Трансформує в HTML те, що відфільтроване."))
         self.radioButton.setText(_translate("MainWindow", "SAX API"))
         self.radioButton_2.setText(_translate("MainWindow", "DOM API"))
         self.pushButton_4.setToolTip(_translate("MainWindow", "<html><head/><body><p>Трансформує XML в HTML.</p></body></html>"))

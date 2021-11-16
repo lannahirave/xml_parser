@@ -1,15 +1,16 @@
 import lxml.html
 from lxml import etree
 from service import Service
+from io import StringIO, BytesIO
 
 
 class TransformerToXml():
-    def create_html_file(self, services_list: list, path: str, new_file_path: str) -> None:
-        import lxml.html
-        from lxml import etree
+    def create_html_file(self, services_list: list, xml: str, new_file_path: str) -> None:
+        #print(xml)
         xslt_doc = etree.parse('template.xslt')
-        xslt_transformer = etree.XSLT(xslt_doc)        
-        source_doc = etree.parse(path)
+        xslt_transformer = etree.XSLT(xslt_doc)
+          
+        source_doc = etree.fromstring(bytes(xml, encoding='utf-8'))
         output_doc = xslt_transformer(source_doc)
         output_doc.write(new_file_path, pretty_print=True)
         
@@ -38,14 +39,14 @@ class TransformerToXml():
         Returns:
             str: [part of xml file]
         """
-        result = '<service>\n'
+        result = '  <service>\n'
         props = service.properties()
         tags = service.get_names_eng()
         for i in range(len(props)):
             if type(props[i]) != list:
-                result += f"<{tags[i]}>{props[i]}</{tags[i]}>\n"
+                result += f"    <{tags[i]}>{props[i]}</{tags[i]}>\n"
             else:
                 for item in props[i]:
-                    result += f"<{tags[i]}>{item}</{tags[i]}>\n"
-        result += "</service>\n"
+                    result += f"    <{tags[i]}>{item}</{tags[i]}>\n"
+        result += "  </service>\n"
         return result
