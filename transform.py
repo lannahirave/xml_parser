@@ -1,10 +1,9 @@
 import lxml.html
 from lxml import etree
 from service import Service
-from io import StringIO, BytesIO
 
 
-class TransformerToXml():
+class Transformer():
     def create_html_file(self, services_list: list, xml: str, new_file_path: str) -> None:
         #print(xml)
         xslt_doc = etree.parse('template.xslt')

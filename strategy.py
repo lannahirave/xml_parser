@@ -87,7 +87,7 @@ class FAST_parser(Parser):
             #print(items)
             self.services_list.append(Service(items))
     
-    def get_list(self):
+    def get_list(self) -> list:
         return self.services_list
     
 class Context():
@@ -102,6 +102,6 @@ class Context():
     def strategy(self, strategy: Parser) -> None:
         self._strategy = strategy
     
-    def parse(self, path):
+    def parse(self, path) -> list:
         self._strategy.parse(path)
         return self._strategy.get_list()

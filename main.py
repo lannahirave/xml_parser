@@ -11,7 +11,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import *
 from strategy import *
-from transform import TransformerToXml
+from transform import Transformer
 import sys
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
@@ -284,8 +284,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.textBrowser.clear()
         self.filtered_services_list = []
         self.services_list = []
-        
-        
+            
     def find(self):
         #print("FIND")
         filters = []
@@ -332,7 +331,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if list_to_create == []:
                 self.show_message(mw, 'Пустий файл!')
                 return
-        trans = TransformerToXml()
+        trans = Transformer()
         path = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File', '', 'html(*.html)')
         if path[0] == '' or path is None:
             return
@@ -345,7 +344,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             
     def save_filtered(self, mw: QtWidgets.QMainWindow):
         try:
-            trans = TransformerToXml()
+            trans = Transformer()
             list_to_generate = self.filtered_services_list
             if list_to_generate == []:
                 self.show_message(mw, 'Пустий файл!')
