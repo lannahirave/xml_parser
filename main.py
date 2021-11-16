@@ -315,13 +315,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             for i in range(len(props)):
                 if filters[i] == '':
                     continue
+                #print(filters[i], props[i])
+                #print((type(props)[i], filters[i] not in props[i]))
                 if (type(props[i]) != list and filters[i] !=  props[i]) or \
-                    (type(props)[i]== list and filters not in props[i]):
+                    (type(props[i])== list and filters[i] not in props[i]):
                     flag = False
                     break
             if not flag:
                 flag = True
                 continue
+            print(service)
             self.filtered_services_list.append(service)
     
     def transform(self, mw: QtWidgets.QMainWindow):
