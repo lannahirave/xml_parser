@@ -315,7 +315,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             for i in range(len(props)):
                 if filters[i] == '':
                     continue
-                if filters[i] not in props[i]:
+                if (type(props[i]) != list and filters[i] !=  props[i]) or \
+                    (type(props)[i]== list and filters not in props[i]):
                     flag = False
                     break
             if not flag:
@@ -332,16 +333,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         path = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File', '', 'html(*.html)')
         if path[0] == '' or path is None:
             return
-        if 1:
+        try:
             new_xml = trans.generate_xml_text(self.filtered_services_list)
             trans.create_html_file(list_to_create, new_xml, path[0])
-        # except Exception as exp:
-        #     self.show_message(mw, str(exp))
-        #     print(exp)
+        except Exception as exp:
+            self.show_message(mw, str(exp))
+            print(exp)
             
-            
-        
-        
     def save_filtered(self, mw: QtWidgets.QMainWindow):
         try:
             trans = TransformerToXml()
