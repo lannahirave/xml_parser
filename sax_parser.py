@@ -18,10 +18,16 @@ class XMLHandler(xml.sax.ContentHandler):
         
     def startElement(self, tag, attributes):
         self.CurrentData = tag
-        """
+        
         if tag == 'service':
-            print("-"*8)
-        """
+            self.title = ''
+            self.annotation = ''
+            self.type = ''
+            self.version = ''
+            self.authors = []
+            self.terms = ''
+            self.registered = 0
+
     
     def endElement(self, tag):
         """ 
